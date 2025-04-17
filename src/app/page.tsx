@@ -1,10 +1,21 @@
+"use client";
 import { Button } from "@/components/ui/button";
-import { AuthScreen } from "@/features/auth/components/auth-screen";
+import { useAuthActions } from "@convex-dev/auth/react";
 
 export default function Home() {
-  return (  
+  const { signOut } = useAuthActions();
+
+  return (
     <div>
-      <AuthScreen/>
+      Logged In!
+      <Button
+        onClick={async () => {
+          await signOut();
+          window.location.href = "/auth";
+        }}
+      >
+        Sign Out
+      </Button>
     </div>
-);
+  );
 }
