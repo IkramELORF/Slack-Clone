@@ -1,6 +1,13 @@
 import { useCurrentMember } from "@/features/members/api/use-current-member";
 import { useGetWorkspace } from "@/features/workspaces/api/use-get-workspace";
+import { useCreateChannelModal } from "@/features/channels/store/use-create-channel-modal";
+import { useGetChannels } from "@/features/channels/api/use-get-channels";
+import { useGetMembers } from "@/features/members/api/use-get-members";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
+import { WorkspaceHeader } from "./workspace-header";
+import { SidebarItem } from "./sidebar-item";
+import { WorkspaceSection } from "./workspace-section";
+import { UserItem } from "./user-item";
 import {
   AlertTriangle,
   HashIcon,
@@ -8,15 +15,10 @@ import {
   MessageSquareText,
   SendHorizonal,
 } from "lucide-react";
-import { WorkspaceHeader } from "./workspace-header";
-import { SidebarItem } from "./sidebar-item";
-import { useGetChannels } from "@/features/channels/api/use-get-channels";
-import { WorkspaceSection } from "./workspace-section";
-import { useGetMembers } from "@/features/members/api/use-get-members";
-import { UserItem } from "./user-item";
-import { useCreateChannelModal } from "@/features/channels/store/use-create-channel-modal";
+import { useChannelId } from "@/hooks/use-channel-id";
 
 export const WorkspaceSidebar = () => {
+  const channelId = useChannelId();
   const workspaceId = useWorkspaceId();
   const [_open, setOpen] = useCreateChannelModal();
 
@@ -70,6 +72,7 @@ export const WorkspaceSidebar = () => {
             icon={HashIcon}
             label={item.name}
             id={item._id}
+            variant={channelId === item._id ? "active" : "default"}
           />
         ))}
       </WorkspaceSection>
