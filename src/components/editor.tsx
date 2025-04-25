@@ -141,8 +141,7 @@ const Editor = ({
     const quill = quillRef.current;
     quill?.insertText(quill?.getSelection()?.index || 0, emoji.native);
   };
-  const isEmpty = text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
-
+  const isEmpty = !(image || text.replace(/<(.|\n)*?>/g, "").trim().length > 0);
   return (
     <div className="flex flex-col">
       <input
