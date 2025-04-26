@@ -63,6 +63,123 @@ const getMember = async (ctx: QueryCtx, workspaceId: Id<"workspaces">, userId: I
         .unique();
 }
 
+export const remove = mutation({
+    args: {
+        id: v.id("messages"),
+    },
+    handler: async (ctx, args) => {
+        const userId = await auth.getUserId(ctx);
+        if (!userId) {
+            throw new Error("Unauthozied");
+        }
+        const message = await ctx.db.get(args.id);
+        if (!message?.workspaceId) {
+            throw new Error("Message not found");
+        }
+        const member = await getMember(ctx, message.workspaceId, userId);
+        if (!member || member._id !== message.memberId) {
+            throw new Error("Unauthozied");
+        }
+        await ctx.db.delete(args.id);
+        return args.id;
+    },
+});
+
+export const update = mutation({
+    args: {
+        id: v.id("messages"),
+        body: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const userId = await auth.getUserId(ctx);
+        if (!userId) {
+            throw new Error("Unauthozied");
+        }
+        const message = await ctx.db.get(args.id);
+        if (!message?.workspaceId) {
+            throw new Error("Message not found");
+        }
+        const member = await getMember(ctx, message.workspaceId, userId);
+        if (!member || member._id !== message.memberId) {
+            throw new Error("Unauthozied");
+        }
+        await ctx.db.patch(args.id, {
+            body: args.body,
+            updatedAt: Date.now(),
+        });
+        return args.id;
+    },
+});
+
+export const getById = query({
+    args: {
+        id: v.id("messages"),
+    },
+    handler: async (ctx, args) => {
+        const userId = await auth.getUserId(ctx);
+        if (!userId) {
+            return null;
+        }
+        const message = await ctx.db.get(args.id);
+        if (!message) {
+            return null;
+        }
+        if (!message.workspaceId) {
+            return null;
+        }
+        const currentMember = await getMember(ctx, message.workspaceId, userId);
+        if (!currentMember) {
+            return null;
+        }
+        const member = message.memberId ? await populateMember(ctx, message.memberId) : null;
+        if (!member) {
+            return null;
+        }
+        const user = await populateUser(ctx, member.userId);
+        if (!user) {
+            return null;
+        }
+        const reactions = await populateReactions(ctx, message._id);
+        const reactionsWithCounts = reactions.map((reaction) => {
+            return {
+                ...reaction,
+                count: reactions.filter((r) => r.value === reaction.value).length,
+            };
+        });
+        const dedupedReactions = reactionsWithCounts.reduce(
+            (acc, reaction) => {
+                const existingReaction = acc.find(
+                    (r) => r.value === reaction.value,
+                );
+                if (existingReaction) {
+                    existingReaction.memberIds = Array.from(
+                        new Set([...existingReaction.memberIds, reaction.memberId])
+                    );
+                } else {
+                    acc.push({ ...reaction, memberIds: [reaction.memberId] });
+                }
+                return acc;
+            },
+            [] as (Doc<"reactions"> & {
+                count: number;
+                memberIds: Id<"members">[];
+            })[]
+        );
+        const reactionWithoutMemberIdProperty = dedupedReactions.map(
+            ({ memberId, ...rest }) => rest,
+        );
+        return {
+            ...message,
+            image: message.image
+                ? await ctx.storage.getUrl(message.image)
+                : undefined,
+            user,
+            member,
+            reactions: reactionWithoutMemberIdProperty,
+        };
+    },
+});
+
 export const get = query({
     args: {
         channelId: v.optional(v.id("channels")),
@@ -112,7 +229,7 @@ export const get = query({
                                 count: reactions.filter((r) => r.value === reaction.value).length,
                             };
                         });
-                        const ddedupedReactions = reactionsWithCounts.reduce(
+                        const dedupedReactions = reactionsWithCounts.reduce(
                             (acc, reaction) => {
                                 const existingReaction = acc.find(
                                     (r) => r.value === reaction.value,
@@ -131,7 +248,7 @@ export const get = query({
                                 memberIds: Id<"members">[];
                             })[]
                         );
-                        const reactionWithoutMemberIdProperty = ddedupedReactions.map(
+                        const reactionWithoutMemberIdProperty = dedupedReactions.map(
                             ({ memberId, ...rest }) => rest,
                         );
                         return {
