@@ -24,11 +24,14 @@ type CreateMessageValues = {
 export const ChatInput = ({ placeholder }: ChatInputProps) => {
   const workspaceId = useWorkspaceId();
   const channelId = useChannelId();
-  const [editorKey, setEditorKey] = useState(0);
+
   const editorRef = useRef<Quill | null>(null);
+
   const { mutate: createMessage } = useCreateMessage();
   const { mutate: generateUploadUrl } = useGenerateUploadUrl();
+
   const [isPending, setIsPending] = useState(false);
+  const [editorKey, setEditorKey] = useState(0);
 
   const handleSubmit = async ({
     body,
@@ -73,7 +76,7 @@ export const ChatInput = ({ placeholder }: ChatInputProps) => {
     }
   };
 
-  editorRef.current?.focus;
+  // editorRef.current?.focus;
 
   return (
     <div className="px-5 pb-10 w-full">
