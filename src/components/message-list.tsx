@@ -7,12 +7,13 @@ import { Id } from "../../convex/_generated/dataModel";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import { useCurrentMember } from "@/features/members/api/use-current-member";
 import { Loader } from "lucide-react";
+import { ConversationHero } from "./conversation-hero";
 
 const TIME_THRESHOLD = 5;
 
 interface MessageListProps {
   memberName?: string;
-  memeberImage?: string;
+  memberImage?: string;
   channelName?: string;
   channelCreationTime?: number;
   variant?: "channel" | "thread" | "conversation";
@@ -31,7 +32,7 @@ const formatDateLabel = (dateStr: string) => {
 
 export const MessageList = ({
   memberName,
-  memeberImage,
+  memberImage,
   channelName,
   channelCreationTime,
   data,
@@ -94,6 +95,7 @@ export const MessageList = ({
                 hideThreadButton={variant === "thread"}
                 threadCount={message.threadCount}
                 threadImage={message.threadImage}
+                threadName={message.threadName}
                 threadTimestamp={message.threadTimestamp}
               />
             );
@@ -125,7 +127,7 @@ export const MessageList = ({
           </span>
         </div>
       )}
-      {variant === "channel" && channelCreationTime && (
+      {variant === "channel" && channelName && channelCreationTime && (
         <ChannelHero
           name={channelName || "Unknown Channel"}
           creationTime={
@@ -134,6 +136,9 @@ export const MessageList = ({
               : "Unknown Date"
           }
         />
+      )}
+      {variant === "conversation" && (
+        <ConversationHero name={memberName} image={memberImage} />
       )}
     </div>
   );
