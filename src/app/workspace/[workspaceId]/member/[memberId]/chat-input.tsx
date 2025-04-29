@@ -77,7 +77,7 @@ export const ChatInput = ({ placeholder, conversationId }: ChatInputProps) => {
   // editorRef.current?.focus;
 
   return (
-    <div className="px-5 pb-10 w-full">
+    <div className="px-5 pb-5 w-full">
       <Editor
         key={editorKey}
         placeholder={placeholder}
