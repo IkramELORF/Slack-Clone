@@ -25,18 +25,18 @@ export const WorkspaceHeader = ({
   const [inviteopen, setInviteOpen] = useState(false);
   return (
     <>
-      <InviteModal 
-      open={inviteopen} 
-      setOpen={setInviteOpen} 
-      name={workspace.name}
-      joinCode={workspace.joinCode}
+      <InviteModal
+        open={inviteopen}
+        setOpen={setInviteOpen}
+        name={workspace.name}
+        joinCode={workspace.joinCode}
       />
       <PreferencesModal
         open={preferencesopen}
         setOpen={setPreferencesOpen}
         initialValue={workspace.name}
       />
-      <div className="flex items-center justify-between px-4 h-[49px] gap-0.5">
+      <div className="flex items-center justify-between px-4 h-[60px] gap-0.5">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -81,7 +81,7 @@ export const WorkspaceHeader = ({
             )}
           </DropdownMenuContent>
         </DropdownMenu>
-        <div className="flex items-center gap-0.5">
+        <div className="flex items-center gap-0.5 shrink-0">
           <Hint label="Filter conversations" side="bottom">
             <Button variant="transparent" size="iconSm">
               <ListFilter className="size-4" />
