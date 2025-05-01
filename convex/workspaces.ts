@@ -1,7 +1,6 @@
 import { v } from 'convex/values';
 import { mutation, query } from './_generated/server';
 import { auth } from './auth';
-import { useCurrentMember } from '@/features/members/api/use-current-member';
 
 const generateCode = () => {
     const code = Array.from({ length: 6 }, () => "0123456789abcdefghijklmnopqrstuvwxyz"[Math.floor(Math.random() * 36)]).join("");
