@@ -11,6 +11,7 @@ import { TrashIcon } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+// En-tête du canal avec options pour renommer ou supprimer (admin seulement)
 
 import {
   Dialog,
@@ -43,10 +44,13 @@ export const Header = ({ title }: HeaderProps) => {
   const { mutate: removeChannel, isPending: IsRemovingChannel } =
     useRemoveChannel();
 
+  // Ouvre la modale d’édition si l’utilisateur est admin
   const handleEditOpen = async (value: boolean) => {
     if (member?.role !== "admin") return;
     setEditOpen(true);
   };
+
+  // Supprime le canal après confirmation
   const handleDelete = async () => {
     const ok = await confirm();
     if (!ok) return;
@@ -64,11 +68,13 @@ export const Header = ({ title }: HeaderProps) => {
     );
   };
 
+  // Gère la modification du nom du canal
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\s+/g, "-").toLowerCase();
     setValue(value);
   };
 
+  // Envoie la requête de mise à jour du nom du canal
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     updateChannel(

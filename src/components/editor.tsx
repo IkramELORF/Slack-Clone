@@ -1,5 +1,7 @@
-import Quill, { type QuillOptions } from "quill";
-import "quill/dist/quill.snow.css";
+import Quill, { type QuillOptions } from "quill"; // Importation de l'éditeur Quill et de son type d'options
+import "quill/dist/quill.snow.css"; // Thème Snow pour l'apparence de l'éditeur
+
+// Import de composants d'UI et d'icônes
 import { Button } from "./ui/button";
 import { PiTextAa } from "react-icons/pi";
 import { ImageIcon, Smile, XIcon } from "lucide-react";
@@ -18,9 +20,10 @@ import {
   useState,
 } from "react";
 
+// Type pour la valeur envoyée
 type EditorValue = {
-  image: File | null;
-  body: string;
+  image: File | null; // Image ajoutée
+  body: string; // Contenu du message (Quill Delta JSON)
 };
 interface EditorProps {
   onSubmit: ({ image, body }: EditorValue) => void;
@@ -53,12 +56,14 @@ const Editor = ({
   const imageElementRef = useRef<HTMLInputElement>(null);
 
   useLayoutEffect(() => {
+    // Met à jour les références avant le rendu
     submitRef.current = onSubmit;
     placeholderRef.current = placeholder;
     defaultRef.current = defaultValue;
     disabledRef.current = disabled;
   });
 
+  // ====INITIALISATION DE QUILL====
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -81,20 +86,21 @@ const Editor = ({
             enter: {
               key: "Enter",
               handler: () => {
-                const text = quill.getText();
+                const text = quill.getText(); // Récupère le texte brut
                 const addedImage = imageElementRef.current?.files?.[0] || null;
+                // Vérifie si le message est vide
                 const isEmpty =
                   !image && text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
                 if (isEmpty) return;
                 const body = JSON.stringify(quill.getContents());
-                submitRef.current?.({ body, image: addedImage });
+                submitRef.current?.({ body, image: addedImage }); // Envoie le message
               },
             },
             shift_enter: {
               key: "Enter",
               shiftKey: true,
               handler: () => {
-                quill.insertText(quill.getSelection()?.index || 0, "\n");
+                quill.insertText(quill.getSelection()?.index || 0, "\n"); // Ajoute une ligne
               },
             },
           },
@@ -102,22 +108,22 @@ const Editor = ({
       },
     };
 
-    const quill = new Quill(editorContainer, options);
+    const quill = new Quill(editorContainer, options); // Crée l’éditeur
     quillRef.current = quill;
     quillRef.current.focus;
 
     if (innerRef) {
-      innerRef.current = quill;
+      innerRef.current = quill; // Lien avec une ref externe si nécessaire
     }
     if (defaultRef.current) {
-      quill.setContents(defaultRef.current);
+      quill.setContents(defaultRef.current); // Initialise avec une valeur par défaut
     }
-    setText(quill.getText());
+    setText(quill.getText()); // Met à jour le texte brut
     quill.on(Quill.events.TEXT_CHANGE, () => {
       setText(quill.getText());
     });
     return () => {
-      quill.off(Quill.events.TEXT_CHANGE);
+      quill.off(Quill.events.TEXT_CHANGE); // Nettoyage
       if (container) {
         container.innerHTML = "";
       }

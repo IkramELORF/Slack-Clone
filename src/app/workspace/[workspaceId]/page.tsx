@@ -22,9 +22,10 @@ const WorkspaceIdPage = () => {
   const { data: channels, isLoading: channelsLoading } = useGetChannels({
     workspaceId,
   });
-  const channelId = useMemo(() => channels?.[0]?._id, [channels]);
-  const isAdmin = useMemo(() => member?.role === "admin", [member?.role]);
+  const channelId = useMemo(() => channels?.[0]?._id, [channels]); // Récupère le premier channel disponible
+  const isAdmin = useMemo(() => member?.role === "admin", [member?.role]); // Vérifie si l'utilisateur est admin
 
+  // Redirection ou ouverture du modal en fonction de la situation
   useEffect(() => {
     if (
       workspaceLoading ||
@@ -34,9 +35,11 @@ const WorkspaceIdPage = () => {
       !workspace
     )
       return;
+    // Si au moins un channel existe, rediriger vers celui-ci
     if (channelId) {
       router.push(`/workspace/${workspaceId}/channel/${channelId}`);
     } else if (!open && isAdmin) {
+      // Si aucun channel n’existe, et que l’utilisateur est admin, ouvrir le modal
       setOpen(true);
     }
   }, [
@@ -52,6 +55,7 @@ const WorkspaceIdPage = () => {
     router,
     workspaceId,
   ]);
+  // Affiche un loader pendant le chargement
   if (workspaceLoading || channelsLoading || memberLoading) {
     return (
       <div className="h-full flex-1 flex items-center justify-center flex-col gap-2">

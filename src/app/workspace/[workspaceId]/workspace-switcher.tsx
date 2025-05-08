@@ -3,7 +3,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useGetWorkspace } from "@/features/workspaces/api/use-get-workspace";
@@ -11,7 +10,7 @@ import { useGetWorkspaces } from "@/features/workspaces/api/use-get-workspaces";
 import { useCreateWorkspaceModal } from "@/features/workspaces/store/use-create-workspace-modal";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import { Loader, Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"; // Navigation côté client (App Router)
 
 export const WorkspaceSwitcher = () => {
   const router = useRouter();
@@ -19,11 +18,12 @@ export const WorkspaceSwitcher = () => {
   const workspaceId = useWorkspaceId();
   const { data: workspace, isLoading: workspaceLoading } = useGetWorkspace({
     id: workspaceId,
-  });
-  const { data: workspaces, isLoading: workspacesLoading } = useGetWorkspaces();
+  }); // Données du workspace courant
+  const { data: workspaces, isLoading: workspacesLoading } = useGetWorkspaces(); // Liste de tous les workspaces de l’utilisateur
+
   const filteredWorkspaces = workspaces?.filter(
     (workspace) => workspace?._id !== workspaceId
-  );
+  ); // Exclure le workspace courant de la liste déroulante
 
   return (
     <DropdownMenu>

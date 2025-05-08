@@ -14,6 +14,9 @@ import { Separator } from "@/components/ui/separator";
 import { SignInFlow } from "../types";
 import { TriangleAlert } from "lucide-react";
 import { useAuthActions } from "@convex-dev/auth/react";
+
+// Composant du formulaire d'inscription utilisateur.
+// Utilise le même hook `signIn` de Convex mais avec `flow: "signUp"` pour distinguer l'action côté backend.
 interface SignUpCardProps {
   setState: (state: SignInFlow) => void;
 }
@@ -32,6 +35,10 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
       setPending(false);
     });
   };
+
+  // Vérifie la correspondance des mots de passe
+  // Appelle le backend Convex pour créer un utilisateur avec email, nom et mot de passe
+
   const onPasswordSignUp = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (password !== confirmPassword) {

@@ -30,7 +30,11 @@ export const InviteModal = ({
     "Are you sure?",
     "This will deactivate the current invite code  and generate a new one."
   );
+
+  // Mutation pour générer un nouveau code
   const { mutate, isPending } = useNewJoinCode();
+
+  // Handler : génération d'un nouveau code
   const handleNewCode = async () => {
     const ok = await confirm();
     if (!ok) return;
@@ -46,6 +50,8 @@ export const InviteModal = ({
       }
     );
   };
+
+  // Handler : copier le lien dans le presse-papiers
   const handleCopy = () => {
     const inviteLink = `${window.location.origin}/join/${workspaceId}`;
     navigator.clipboard

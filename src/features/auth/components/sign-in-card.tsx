@@ -22,15 +22,20 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
   const { signIn } = useAuthActions();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [pending, setPending] = useState(false);
-  const [error, setError] = useState("");
+  const [pending, setPending] = useState(false); // État pour gérer l’état de chargement
+  const [error, setError] = useState(""); // Message d’erreur à afficher
 
+  // Fonction pour la connexion via Google ou GitHub
   const onProviderSignIn: (value: "github" | "google") => void = (value) => {
     setPending(true);
     signIn(value).finally(() => {
       setPending(false);
     });
   };
+
+  // Gestion du formulaire de connexion classique
+  // Appel de l'API d'authentification avec les identifiants de l'utilisateur
+  // Affiche une erreur si l'authentification échoue
   const onPasswordSignIn = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setPending(true);
