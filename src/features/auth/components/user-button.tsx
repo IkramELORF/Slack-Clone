@@ -13,15 +13,17 @@ import { useAuthActions } from "@convex-dev/auth/react";
 export const UserButton = () => {
   const { signOut } = useAuthActions();
 
-  const { data, isLoading } = useCurrentUser();
+  // Bouton utilisateur avec menu déroulant et fonction de déconnexion
+  const { data, isLoading } = useCurrentUser(); // Hook pour récupérer l'utilisateur courant
   if (isLoading) {
     return <Loader className="size-4 animate-spin" />;
   }
+  // Ne rien afficher si aucun utilisateur
   if (!data) {
     return null;
   }
   const { image, name } = data;
-  const avatarFallback = name!.charAt(0).toUpperCase();
+  const avatarFallback = name!.charAt(0).toUpperCase(); // Affiche la première lettre si l’image n’est pas disponible.
 
   return (
     <DropdownMenu modal={false}>

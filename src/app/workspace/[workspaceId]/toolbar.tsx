@@ -24,10 +24,12 @@ export const Toolbar = () => {
   const { data: members } = useGetMembers({ workspaceId });
   const [open, setOpen] = useState(false);
 
+  // Navigue vers un channel sélectionné et ferme la boîte de dialogue
   const onChannelClick = (channelId: string) => {
     setOpen(false);
     router.push(`/workspace/${workspaceId}/channel/${channelId}`);
   };
+  // Navigue vers un membre sélectionné et ferme la boîte de dialogue
   const onMemberClick = (memberId: string) => {
     setOpen(false);
     router.push(`/workspace/${workspaceId}/member/${memberId}`);
@@ -45,10 +47,15 @@ export const Toolbar = () => {
           <Search className="size-4 text-white mr-2" />
           <span className="text-xs text-white">Search {data?.name}</span>
         </Button>
+
+        {/* Composant de dialogue de commande, s'affiche quand "open" est true */}
         <CommandDialog open={open} onOpenChange={setOpen}>
+          {/* Champ de saisie de commande */}
           <CommandInput placeholder="Type a command or search..." />
+          {/* Liste des résultats */}
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
+            {/* Groupe des channels */}
             <CommandGroup heading="Channels">
               {channels?.map((channel) => (
                 <CommandItem
@@ -60,6 +67,7 @@ export const Toolbar = () => {
               ))}
             </CommandGroup>
             <CommandSeparator />
+            {/* Groupe des membres */}
             <CommandGroup heading="Members">
               {members?.map((member) => (
                 <CommandItem

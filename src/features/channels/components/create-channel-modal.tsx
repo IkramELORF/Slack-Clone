@@ -15,15 +15,19 @@ export const CreateChannelModal = () => {
   const { mutate, isPending } = useCreateChannel();
   const [open, setOpen] = useCreateChannelModalStore();
   const [name, setName] = useState("");
-
+  // Gère la transformation du nom du canal : espaces → tirets, minuscule
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\s+/g, "-").toLowerCase();
     setName(value);
   };
+
+  // Ferme la modal et réinitialise le champ
   const handleClose = () => {
     setName("");
     setOpen(false);
   };
+
+  // Soumission du formulaire
   const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     mutate(

@@ -1,6 +1,8 @@
-import { defineSchema, defineTable } from "convex/server";
-import { authTables } from "@convex-dev/auth/server";
-import { v } from "convex/values";
+import { defineSchema, defineTable } from "convex/server"; // Fonctions de base pour définir le schéma Convex
+import { authTables } from "@convex-dev/auth/server"; // Tables pré-définies pour la gestion de l'authentification
+import { v } from "convex/values";// Utilitaire pour les types de validation
+
+// Tables `users` et `sessions` injectées automatiquement par le module d'auth Convex.
 
 const schema = defineSchema({
     ...authTables,
@@ -9,6 +11,7 @@ const schema = defineSchema({
         userId: v.id("users"),
         joinCode: v.string(),
     }),
+    // Représente un utilisateur dans un workspace, avec un rôle (admin/member).
 
     members: defineTable({
         userId: v.id("users"),
@@ -18,13 +21,14 @@ const schema = defineSchema({
         .index("by_user_id", ["userId"])
         .index("by_workspace_id", ["workspaceId"])
         .index("by_workspace_id_user_id", ["workspaceId", "userId"]),
-
+    // Représente les canaux publics/privés dans un workspace.
     channels: defineTable({
         name: v.string(),
         workspaceId: v.id("workspaces"),
 
     })
         .index("by_workspace_id", ["workspaceId"]),
+    // Représente une conversation privée entre deux membres dans un workspace.
 
     conversations: defineTable({
         workspaceId: v.id("workspaces"),
@@ -32,7 +36,8 @@ const schema = defineSchema({
         memberTwoId: v.id("members"),
     })
         .index("by_workspace_id", ["workspaceId"]),
-
+    // Messages échangés dans un canal ou une conversation privée.
+    // Peut contenir du texte, une image, ou être une réponse à un autre message.
     messages: defineTable({
         body: v.string(),
         image: v.optional(v.id("_storage")),
@@ -53,7 +58,7 @@ const schema = defineSchema({
             "parentMessageId",
             "conversationId",
         ]),
-
+    // Permet aux membres de réagir à un message (emoji, like, etc.).
     reactions: defineTable({
         workspaceId: v.id("workspaces"),
         messageId: v.id("messages"),

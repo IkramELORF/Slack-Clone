@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { useChannelId } from "@/hooks/use-channel-id";
 import { useMemberId } from "@/hooks/use-member-id";
-
+// Composant principal : barre latérale d'un espace de travail
 export const WorkspaceSidebar = () => {
   const memberId = useMemberId();
   const channelId = useChannelId();
@@ -36,6 +36,7 @@ export const WorkspaceSidebar = () => {
   const { data: members, isLoading: membersLoading } = useGetMembers({
     workspaceId,
   });
+  // Affichage d'un spinner de chargement tant que les données importantes ne sont pas prêtes
   if (memberLoading || workspaceLoading) {
     return (
       <div className="flex flex-col bg-[#5E2C5F] h-full items-center justify-center ">
@@ -43,7 +44,7 @@ export const WorkspaceSidebar = () => {
       </div>
     );
   }
-
+  // Affichage d'un message d'erreur si le workspace ou le membre est introuvable
   if (!workspace || !member) {
     return (
       <div className="flex flex-col gap-y-2 bg-[#5E2C5F] h-full items-center justify-center ">
@@ -52,6 +53,7 @@ export const WorkspaceSidebar = () => {
       </div>
     );
   }
+  // Rendu principal de la sidebar
   return (
     <div className="flex flex-col bg-[#5E2C5F] h-full w-full ">
       <WorkspaceHeader

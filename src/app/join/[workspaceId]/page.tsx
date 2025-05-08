@@ -19,13 +19,16 @@ const JoinPage = () => {
   const workspaceId = useWorkspaceId();
   const { data, isLoading } = useGetWorkspaceInfo({ id: workspaceId });
   const { mutate, isPending } = useJoin();
-  const isMember = useMemo(() => data?.isMember, [data?.isMember]);
+  const isMember = useMemo(() => data?.isMember, [data?.isMember]); // Vérifie si l'utilisateur est déjà membre
+
+  // Si déjà membre, redirige automatiquement
   useEffect(() => {
     if (isMember) {
       router.push(`/workspace/${workspaceId}`);
     }
   }, [isMember, router, workspaceId]);
 
+  // Fonction appelée lorsque l'utilisateur entre les 6 caractères
   const handleComplete = (value: string) => {
     mutate(
       { workspaceId, joinCode: value },
@@ -40,6 +43,8 @@ const JoinPage = () => {
       }
     );
   };
+
+  // Affiche un loader pendant le chargement des infos du workspace
   if (isLoading) {
     return (
       <div className="h-full flex items-center justify-center">
@@ -47,6 +52,7 @@ const JoinPage = () => {
       </div>
     );
   }
+  // Page affichée si les infos sont chargées
   return (
     <div className="h-full flex flex-col gap-y-8 items-center justify-center bg-white p-8 rounded-lg shadow-md">
       <Image src="/logo.png" width={60} height={60} alt="Logo" />

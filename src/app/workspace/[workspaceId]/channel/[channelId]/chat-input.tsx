@@ -8,6 +8,7 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Id } from "../../../../../../convex/_generated/dataModel";
 
+// Chargement dynamique de l'éditeur pour éviter l'import côté serveur
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
 interface ChatInputProps {
@@ -25,14 +26,15 @@ export const ChatInput = ({ placeholder }: ChatInputProps) => {
   const workspaceId = useWorkspaceId();
   const channelId = useChannelId();
 
-  const editorRef = useRef<Quill | null>(null);
+  const editorRef = useRef<Quill | null>(null); //une référence mutable (modifiable) appelée editorRef qui va pointer vers l'éditeur Quill, ou être null au début.
 
   const { mutate: createMessage } = useCreateMessage();
   const { mutate: generateUploadUrl } = useGenerateUploadUrl();
 
   const [isPending, setIsPending] = useState(false);
-  const [editorKey, setEditorKey] = useState(0);
+  const [editorKey, setEditorKey] = useState(0); // Utilisé pour forcer la réinitialisation de l'éditeur
 
+  // Gère l'envoi de message et l'upload d'image
   const handleSubmit = async ({
     body,
     image,
@@ -50,6 +52,7 @@ export const ChatInput = ({ placeholder }: ChatInputProps) => {
         body,
         image: undefined,
       };
+      // Si une image est fournie, on génère une URL d’upload et on l’upload
       if (image) {
         const url = await generateUploadUrl({}, { throwError: true });
         if (!url) {
@@ -67,7 +70,7 @@ export const ChatInput = ({ placeholder }: ChatInputProps) => {
         values.image = storageId;
       }
       await createMessage(values, { throwError: true });
-      setEditorKey((prevKey) => prevKey + 1);
+      setEditorKey((prevKey) => prevKey + 1); // Reset l'éditeur
     } catch (error) {
       toast.error("Failed to send message");
     } finally {

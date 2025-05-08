@@ -1,3 +1,4 @@
+// Import des outils de validation et des helpers serveur de Convex
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { auth } from "./auth";
@@ -5,18 +6,19 @@ import { auth } from "./auth";
 
 export const remove = mutation({
     args: {
-        id: v.id("channels"),
+        id: v.id("channels"),// L'identifiant du channel à supprimer
     },
     handler: async (ctx, args) => {
-        const userId = await auth.getUserId(ctx);
+        const userId = await auth.getUserId(ctx);// Vérifie que l'utilisateur est connecté
         if (!userId) {
             throw new Error("Unauthorized");
         }
-        const channel = await ctx.db.get(args.id);
+        const channel = await ctx.db.get(args.id);// Récupère le channel à supprimer
         if (!channel) {
             throw new Error("Channel not found");
 
         }
+        // Vérifie que l'utilisateur est admin dans le workspace du channel
         const member = await ctx.db
             .query("members")
             .withIndex("by_workspace_id_user_id", (q) =>
@@ -26,16 +28,18 @@ export const remove = mutation({
         if (!member || member.role !== "admin") {
             throw new Error("Unauthorized");
         }
-
+        // Récupère tous les messages associés à ce channel
         const [messages] = await Promise.all([
             ctx.db
                 .query("messages")
                 .withIndex("by_channel_id", (q) => q.eq("channelId", args.id))
                 .collect(),
         ]);
+        // Supprime tous les messages du channel un par un
         for (const message of messages) {
             await ctx.db.delete(message._id);
         }
+        // Supprime le channel lui-même
         await ctx.db.delete(args.id);
         return args.id;
     }

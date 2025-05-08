@@ -6,6 +6,7 @@ import { IconType } from "react-icons/lib";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
+// Définition des variantes de style pour les éléments de la sidebar
 const sidbarItemVariants = cva(
   "flex items-center gap-1.5 justify-start font-normal h-7 px-[18px] text-sm overflow-hidden",
   {
@@ -21,10 +22,10 @@ const sidbarItemVariants = cva(
   }
 );
 interface SidebarItemProps {
-  label: string;
-  id: string;
+  label: string; // Texte à afficher
+  id: string; // ID utilisé pour construire l'URL de navigation
   icon: LucideIcon | IconType;
-  variant?: VariantProps<typeof sidbarItemVariants>["variant"];
+  variant?: VariantProps<typeof sidbarItemVariants>["variant"]; // Variante de style (default ou active)
 }
 export const SidebarItem = ({
   label,
