@@ -71,7 +71,7 @@ export const remove = mutation({
     handler: async (ctx, args) => {
         const userId = await auth.getUserId(ctx);
         if (!userId) {
-            throw new Error("Unauthozied");
+            throw new Error("Unauthorized");
         }
         const message = await ctx.db.get(args.id);
         if (!message?.workspaceId) {
@@ -79,7 +79,7 @@ export const remove = mutation({
         }
         const member = await getMember(ctx, message.workspaceId, userId);
         if (!member || member._id !== message.memberId) {
-            throw new Error("Unauthozied");
+            throw new Error("Unauthorized");
         }
         await ctx.db.delete(args.id);
         return args.id;
@@ -94,7 +94,7 @@ export const update = mutation({
     handler: async (ctx, args) => {
         const userId = await auth.getUserId(ctx);
         if (!userId) {
-            throw new Error("Unauthozied");
+            throw new Error("Unauthorized");
         }
         const message = await ctx.db.get(args.id);
         if (!message?.workspaceId) {
@@ -102,7 +102,7 @@ export const update = mutation({
         }
         const member = await getMember(ctx, message.workspaceId, userId);
         if (!member || member._id !== message.memberId) {
-            throw new Error("Unauthozied");
+            throw new Error("Unauthorized");
         }
         await ctx.db.patch(args.id, {
             body: args.body,
