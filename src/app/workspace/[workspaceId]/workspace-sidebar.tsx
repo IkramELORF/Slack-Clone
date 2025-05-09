@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useChannelId } from "@/hooks/use-channel-id";
 import { useMemberId } from "@/hooks/use-member-id";
+import Link from "next/link";
 // Composant principal : barre latérale d'un espace de travail
 export const WorkspaceSidebar = () => {
   const memberId = useMemberId();
@@ -61,8 +62,18 @@ export const WorkspaceSidebar = () => {
         isAdmin={member.role === "admin"}
       />
       <div className="flex flex-col px-2 mt-3">
-        <SidebarItem label="Threads" icon={MessageSquareText} id="threads" />
-        <SidebarItem label="Drafts & Sent" icon={SendHorizonal} id="drafts" />
+        <Link href={`/workspace/${workspaceId}/thread`}>
+          <button className="flex items-center gap-2 px-2 py-1 text-sm text-gray-300 hover:text-white transition">
+            <MessageSquareText size={15} />
+            <span className="text-sm truncate">Discussion threads</span>
+          </button>
+        </Link>
+        <Link href={`/workspace/${workspaceId}/draft`}>
+          <button className="flex items-center gap-2 px-2 py-1 text-sm text-gray-300 hover:text-white transition">
+            <SendHorizonal size={15} />
+            <span className="text-sm truncate">Drafts & Sent</span>
+          </button>
+        </Link>
       </div>
 
       <WorkspaceSection

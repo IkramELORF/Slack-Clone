@@ -12,6 +12,7 @@ const Renderer = ({ value }: RendererProps) => {
     const container = rendererRef.current;
     const quill = new Quill(document.createElement("div"), {
       theme: "snow",
+      readOnly: true,
     });
     quill.enable(false);
     const contents = JSON.parse(value);

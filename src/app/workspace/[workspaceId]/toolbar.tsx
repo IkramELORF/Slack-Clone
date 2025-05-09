@@ -15,6 +15,8 @@ import { useState } from "react";
 import { useGetChannels } from "@/features/channels/api/use-get-channels";
 import { useGetMembers } from "@/features/members/api/use-get-members";
 import { useRouter } from "next/navigation";
+import { Hint } from "@/components/hint";
+import { useCreateAideModal } from "@/features/aide/store/use-create-channel-modal";
 
 export const Toolbar = () => {
   const workspaceId = useWorkspaceId();
@@ -23,7 +25,7 @@ export const Toolbar = () => {
   const { data: channels } = useGetChannels({ workspaceId });
   const { data: members } = useGetMembers({ workspaceId });
   const [open, setOpen] = useState(false);
-
+  const [_openAide, setIsAideOpen] = useCreateAideModal();
   // Navigue vers un channel sélectionné et ferme la boîte de dialogue
   const onChannelClick = (channelId: string) => {
     setOpen(false);
@@ -82,9 +84,15 @@ export const Toolbar = () => {
         </CommandDialog>
       </div>
       <div className=" ml-auto flex-1 flex items-center justify-end">
-        <Button variant="transparent" size="iconSm">
-          <Info className="size-5 text-white" />
-        </Button>
+        <Hint label="Aide" side="bottom">
+          <Button
+            onClick={() => setIsAideOpen(true)}
+            variant="transparent"
+            size="iconSm"
+          >
+            <Info className="size-5 text-white" />
+          </Button>
+        </Hint>
       </div>
     </nav>
   );
