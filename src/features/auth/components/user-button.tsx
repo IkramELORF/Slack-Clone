@@ -37,10 +37,10 @@ export const UserButton = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="center" side="right" className="w-60">
         <DropdownMenuItem
-          onClick={() => {
-            signOut().then(() => {
-              window.location.href = "/auth";
-            });
+          onClick={async () => {
+            // Clear session and avoid triggering queries on logout
+            await signOut(); // End session
+            window.location.replace("/auth"); // Hard redirect to fully reset app state
           }}
           className="h-10"
         >
